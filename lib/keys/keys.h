@@ -15,4 +15,6 @@ typedef enum
 void KEY_Init(void);
 KeyStatus KEY_Scan(void);
 
+uint8_t Key_GetNum(void);
+
 #endif
