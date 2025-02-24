@@ -7,14 +7,11 @@ int main(void)
 {
 	LED_Init();
 	KEY_Init();
-	uint8_t key = 0;
 
 	while (1)
 	{
-		key = Key_GetNum();
-		if (key == 1)
+		if (KEY_Scan() == KEY1_PRESS)
 		{
-			delay_ms(20);
 			LED1_Turn();
 			LED2_Turn();
 		}

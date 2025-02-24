@@ -44,7 +44,7 @@ void LED1_OFF(void)
 
 void LED1_Turn(void)
 {
-    if(GPIO_ReadOutputDataBit(GPIOC, GPIO_Pin_13) == 1) 
+    if(GPIO_ReadOutputDataBit(GPIOC, GPIO_Pin_13) == Bit_SET) 
     {
         GPIO_ResetBits(GPIOC, GPIO_Pin_13);
     } 
@@ -66,7 +66,7 @@ void LED2_OFF(void)
 
 void LED2_Turn(void)
 {
-    if(GPIO_ReadOutputDataBit(GPIOA, GPIO_Pin_10) == 1) 
+    if(GPIO_ReadOutputDataBit(GPIOA, GPIO_Pin_10) == Bit_SET) 
     {
         GPIO_ResetBits(GPIOA, GPIO_Pin_10);
     } 
