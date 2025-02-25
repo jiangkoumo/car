@@ -1,7 +1,7 @@
 #include "stm32f10x.h"
-#include "delay.h"
-#include "led.h"
-#include "keys.h"
+#include "Delay.h"
+#include "LED.h"
+#include "Keys.h"
 
 int main(void)
 {

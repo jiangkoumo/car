@@ -1,6 +1,6 @@
 #include "stm32f10x.h"
-#include "keys.h"
-#include "delay.h"
+#include "Keys.h"
+#include "Delay.h"
 
 /**
   * @brief  按键GPIO初始化函数

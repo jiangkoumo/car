@@ -2,7 +2,7 @@
 #define __OLED_H
 
 #include <stdint.h>
-#include "oled_data.h"
+#include "OLED_Data.h"
 
 /*参数宏定义*********************/
 
