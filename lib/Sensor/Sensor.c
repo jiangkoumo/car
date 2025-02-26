@@ -11,33 +11,33 @@ void Sensor_Init()
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 
-//从左到右依次为0到5
-uint8_t Sensor0_Get_State()
+//从左到右依次为0到5,读取传感器状态，返回1表示遇到白线，返回0表示遇到黑线
+uint8_t Read_Senors_0()
 {
     return GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_7);
 }
 
-uint8_t Sensor1_Get_State()
+uint8_t Read_Senors_1()
 {
     return GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_6);
 }
 
-uint8_t Sensor2_Get_State()
+uint8_t Read_Senors_2()
 {
     return GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_5);
 }
 
-uint8_t Sensor3_Get_State()
+uint8_t Read_Senors_3()
 {
     return GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4);
 }
 
-uint8_t Sensor4_Get_State()
+uint8_t Read_Senors_4()
 {
     return GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_3);
 }
 
-uint8_t Sensor5_Get_State()
+uint8_t Read_Senors_5()
 {
     return GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_2);
 }
