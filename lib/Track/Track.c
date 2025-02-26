@@ -1,3 +1,9 @@
+/**
+ * @file Track.c
+ * @brief 小车寻迹模块实现
+ * @details 基于多传感器状态的小车寻迹算法
+ * @encoding UTF-8
+ */
 #include "stm32f10x.h"
 #include "Track.h"
 #include "Motor.h"
@@ -5,10 +11,10 @@
 #include "Delay.h"
 
 // 默认速度设置
-#define DEFAULT_SPEED 50      // 默认前进速度
-#define TURN_SPEED_LOW 30     // 轻微转弯速度
-#define TURN_SPEED_MID 40     // 中等转弯速度
-#define TURN_SPEED_HIGH 50    // 急转弯速度
+#define DEFAULT_SPEED 500      // 默认前进速度
+#define TURN_SPEED_LOW 300     // 轻微转弯速度
+#define TURN_SPEED_MID 400     // 中等转弯速度
+#define TURN_SPEED_HIGH 500    // 急转弯速度
 
 // 全局变量
 static uint16_t g_defaultSpeed = DEFAULT_SPEED;  // 可调整的默认速度
@@ -32,7 +38,7 @@ void Track_Init(void)
 
 /**
   * @brief  设置默认速度
-  * @param  speed: 默认速度值(0-100)
+  * @param  speed: 默认速度值(0-1000)
   * @retval 无
   */
 void Track_SetDefaultSpeed(uint16_t speed)
@@ -71,17 +77,14 @@ uint8_t Track_GetSensorState(void)
   * @brief  执行寻迹控制
   * @param  无
   * @retval 无
-  */
-void Track_Run(void)
-{
-    uint8_t sensorState = Track_GetSensorState();
-    
-    // 根据传感器状态调整电机速度
-    // 0b000000 表示所有传感器都没有检测到线
+  */    
     // 0b111111 表示所有传感器都检测到线
     
     // 理想情况下，中间的传感器(2和3)位于线上
     // 判断小车位置并调整速度
+void Track_Run(void)
+{
+    uint8_t sensorState = Track_GetSensorState();
     
     // 没有检测到线或全部检测到线，保持上一个状态
     if(sensorState == 0x00 || sensorState == 0x3F)

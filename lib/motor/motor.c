@@ -55,3 +55,30 @@ void Motor_RightSetSpeed(int16_t Speed)
         PWM_SetCompare4(-Speed);
     }
 }
+
+void Motor_go()
+{
+	 Motor_RightSetSpeed(500);
+	 Motor_LeftSetSpeed(500);
+}
+void Motor_back()
+{
+	 Motor_RightSetSpeed(-500);
+	 Motor_LeftSetSpeed(-500);
+}
+void Motor_stop()
+{
+	 Motor_RightSetSpeed(0);
+	 Motor_LeftSetSpeed(0);
+}
+void Turn_right()
+{
+	 Motor_RightSetSpeed(0);
+	 Motor_LeftSetSpeed(500);
+}
+void Turn_left()
+{
+	 Motor_RightSetSpeed(500);
+	 Motor_LeftSetSpeed(0);
+}
+
