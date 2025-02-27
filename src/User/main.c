@@ -31,7 +31,7 @@ int main(void)
 	Track_Init();
     
 	// 设置默认速度
-	Track_SetDefaultSpeed(400); // 设置为中等速度
+	Track_SetDefaultSpeed(700); // 设置为中等速度
 
 
 	while (1) // 主循环

@@ -12,9 +12,9 @@
 
 // 默认速度设置
 #define DEFAULT_SPEED 500      // 默认前进速度
-#define TURN_SPEED_LOW 300     // 轻微转弯速度
-#define TURN_SPEED_MID 400     // 中等转弯速度
-#define TURN_SPEED_HIGH 500    // 急转弯速度
+#define TURN_SPEED_LOW 150     // 轻微转弯速度
+#define TURN_SPEED_MID 250    // 中等转弯速度
+#define TURN_SPEED_HIGH 350    // 急转弯速度
 
 // 全局变量
 static uint16_t g_defaultSpeed = DEFAULT_SPEED;  // 可调整的默认速度
@@ -129,14 +129,14 @@ void Track_Run(void)
     // 急左偏 - 只有传感器0检测到线
     else if(sensorState == 0x01) // 0b000001
     {
-        Motor_LeftSetSpeed(g_defaultSpeed - TURN_SPEED_HIGH);
-        Motor_RightSetSpeed(g_defaultSpeed + TURN_SPEED_LOW);
+        Motor_LeftSetSpeed(g_defaultSpeed - TURN_SPEED_MID);
+        Motor_RightSetSpeed(g_defaultSpeed + TURN_SPEED_MID);
     }
     // 急右偏 - 只有传感器5检测到线
     else if(sensorState == 0x20) // 0b100000
     {
-        Motor_LeftSetSpeed(g_defaultSpeed + TURN_SPEED_LOW);
-        Motor_RightSetSpeed(g_defaultSpeed - TURN_SPEED_HIGH);
+        Motor_LeftSetSpeed(g_defaultSpeed + TURN_SPEED_MID);
+        Motor_RightSetSpeed(g_defaultSpeed - TURN_SPEED_MID);
     }
     // 其他情况 - 根据左右传感器数量决定转向
     else
@@ -176,5 +176,5 @@ void Track_Run(void)
     }
     
     // 添加一个短暂延时，避免过于频繁的调整
-    delay_ms(10);
+    delay_ms(20);
 }
