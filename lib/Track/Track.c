@@ -12,9 +12,9 @@
 
 // 默认速度设置
 #define DEFAULT_SPEED 320      // 默认前进速度
-#define TURN_SPEED_LOW 240     // 轻微转弯速度
-#define TURN_SPEED_MID 320    // 中等转弯速度
-#define TURN_SPEED_HIGH 400    
+#define TURN_SPEED_LOW 400     // 轻微转弯速度
+#define TURN_SPEED_MID 500    // 中等转弯速度
+#define TURN_SPEED_HIGH 650    
 
 // 全局变量
 static uint16_t g_defaultSpeed = DEFAULT_SPEED;  // 可调整的默认速度
@@ -91,8 +91,8 @@ void Track_Run(void)
     {
         // 可以选择停止或保持上一次的动作
         // 这里选择停止
-        Motor_LeftSetSpeed(0);
-        Motor_RightSetSpeed(0);
+        Motor_LeftSetSpeed(g_defaultSpeed);
+        Motor_RightSetSpeed(g_defaultSpeed);
         return;
     }
     
@@ -138,6 +138,13 @@ void Track_Run(void)
         Motor_LeftSetSpeed(g_defaultSpeed + TURN_SPEED_HIGH);
         Motor_RightSetSpeed(g_defaultSpeed - TURN_SPEED_HIGH);
     }
+
+    else if(sensorState == 0x00) // 0b100000
+    {
+        Motor_RightSetSpeed(g_defaultSpeed );
+    }
+
+    
     // 其他情况 - 根据左右传感器数量决定转向
     else
     {
