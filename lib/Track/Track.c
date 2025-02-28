@@ -11,10 +11,10 @@
 #include "Delay.h"
 
 // 默认速度设置
-#define DEFAULT_SPEED 500      // 默认前进速度
-#define TURN_SPEED_LOW 150     // 轻微转弯速度
-#define TURN_SPEED_MID 250    // 中等转弯速度
-#define TURN_SPEED_HIGH 350    // 急转弯速度
+#define DEFAULT_SPEED 1000      // 默认前进速度
+#define TURN_SPEED_LOW 300     // 轻微转弯速度
+#define TURN_SPEED_MID 400    // 中等转弯速度
+#define TURN_SPEED_HIGH 500    // 急转弯速度
 
 // 全局变量
 static uint16_t g_defaultSpeed = DEFAULT_SPEED;  // 可调整的默认速度
