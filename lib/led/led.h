@@ -8,5 +8,7 @@ void LED2_ON(void);
 void LED2_OFF(void);
 void LED1_Turn(void);
 void LED2_Turn(void);
+void LED_Flash_ON(void);
+void LED_Flash_OFF(void);
 
 #endif

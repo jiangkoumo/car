@@ -8,6 +8,7 @@
 #include "OLED.h"
 #include "Menu.h"
 #include "Motor.h"
+#include "LED.h"
 
 uint8_t Key_Num; // 按键编号变量，用于存储当前按下的按键
 
@@ -25,6 +26,7 @@ int Menu1(void)
 	// 显示主菜单选项
 	OLED_ShowString(0,0,"循迹                  ",OLED_8X16);
 	OLED_ShowString(0,16,"电机控制             ",OLED_8X16);
+	OLED_ShowString(0,32,"流水灯                ",OLED_8X16);
 	OLED_Update(); // 更新OLED显示
 	
 	while(1)
@@ -33,12 +35,12 @@ int Menu1(void)
 		if(Key_Num == KEY3_PRESS) // 如果按下KEY3(向上)
 		{
 			flag--; // 菜单选择上移
-			if(flag == 0){flag = 6;} // 菜单循环选择
+			if(flag == 0){flag = 3;} // 菜单循环选择
 		}
 		if(Key_Num == KEY2_PRESS) // 如果按下KEY2(向下)
 		{
 			flag++; // 菜单选择下移
-			if(flag == 7){flag = 1;} // 菜单循环选择
+			if(flag == 4){flag = 1;} // 菜单循环选择
 		}
 		if(Key_Num == KEY1_PRESS) // 如果按下KEY1(确认)
 		{
@@ -54,6 +56,7 @@ int Menu1(void)
 			{
 				OLED_ShowString(0,0,"循迹                  ",OLED_8X16);
 				OLED_ShowString(0,16,"电机控制             ",OLED_8X16);
+				OLED_ShowString(0,32,"流水灯                ",OLED_8X16);
 				OLED_ReverseArea(0,0,128,16); // 反转显示区域，高亮显示
 				OLED_Update(); // 更新OLED显示
 				break;
@@ -62,7 +65,17 @@ int Menu1(void)
 			{
 				OLED_ShowString(0,0,"循迹                  ",OLED_8X16);
 				OLED_ShowString(0,16,"电机控制             ",OLED_8X16);
+				OLED_ShowString(0,32,"流水灯                ",OLED_8X16);
 				OLED_ReverseArea(0,16,128,16); // 反转显示区域，高亮显示
+				OLED_Update(); // 更新OLED显示
+				break;
+			}
+			case 3: // 选择"呼吸灯"菜单项
+			{
+				OLED_ShowString(0,0,"循迹                  ",OLED_8X16);
+				OLED_ShowString(0,16,"电机控制             ",OLED_8X16);
+				OLED_ShowString(0,32,"流水灯                ",OLED_8X16);
+				OLED_ReverseArea(0,32,128,16); // 反转显示区域，高亮显示
 				OLED_Update(); // 更新OLED显示
 				break;
 			}
@@ -182,6 +195,78 @@ int Menu2_Motor(void)
 				OLED_ReverseArea(0,16,128,16); // 反转显示区域，高亮显示
 				OLED_Update(); // 更新OLED显示
 				break;				
+			}
+		}
+	}
+}
+
+int Menu2_LED(void)
+{
+	int menu3_LED = 0; // 菜单选择结果
+	uint8_t ledflag = 1; // 菜单选择标志，初始位置为返回选项
+	
+	// 显示流水灯控制菜单选项
+	OLED_ShowString(0,0,"<-               ",OLED_8X16); // 返回选项
+	OLED_ShowString(0,16,"流水灯开启          ",OLED_8X16);
+	OLED_ShowString(0,32,"流水灯关闭          ",OLED_8X16);
+	OLED_Update(); // 更新OLED显示
+	
+	while(1)
+	{
+		Key_Num = KEY_Scan(); // 扫描按键输入
+		if(Key_Num == KEY3_PRESS) // 如果按下KEY3(向上)
+		{
+			ledflag--; // 菜单选择上移
+			if(ledflag == 0){ledflag = 3;} // 菜单循环选择
+		}
+		if(Key_Num == KEY2_PRESS) // 如果按下KEY2(向下)
+		{
+			ledflag++; // 菜单选择下移
+			if(ledflag == 4){ledflag = 1;} // 菜单循环选择
+		}
+		if(Key_Num == KEY1_PRESS) // 如果按下KEY1(确认)
+		{
+			OLED_Clear(); // 清除OLED显示
+			OLED_Update(); // 更新OLED显示
+			menu3_LED = ledflag; // 保存菜单选择结果
+		}
+		
+		// 根据菜单选择执行相应的流水灯控制命令
+		if(menu3_LED == 1){return 0;} // 返回上一级菜单
+		if(menu3_LED == 2){LED_Flash_ON();} // 执行流水灯开启命令
+		if(menu3_LED == 3){LED_Flash_OFF();} // 执行流水灯关闭命令
+		
+		// 根据菜单选择标志显示高亮菜单项
+		switch(ledflag)
+		{
+			case 1: // 选择返回选项
+			{
+				OLED_ShowString(0,0,"<-               ",OLED_8X16);
+				OLED_ShowString(0,16,"流水灯开启          ",OLED_8X16);
+				OLED_ShowString(0,32,"流水灯关闭          ",OLED_8X16);
+				OLED_ReverseArea(0,0,128,16); // 反转显示区域，高亮显示
+				OLED_Update(); // 更新OLED显示
+				break;
+			}
+			
+			case 2: // 选择流水灯开启选项
+			{
+				OLED_ShowString(0,0,"<-               ",OLED_8X16);
+				OLED_ShowString(0,16,"流水灯开启          ",OLED_8X16);
+				OLED_ShowString(0,32,"流水灯关闭          ",OLED_8X16);
+				OLED_ReverseArea(0,16,128,16); // 反转显示区域，高亮显示
+				OLED_Update(); // 更新OLED显示
+				break;
+			}
+			
+			case 3: // 选择流水灯关闭选项
+			{
+				OLED_ShowString(0,0,"<-               ",OLED_8X16);
+				OLED_ShowString(0,16,"流水灯开启          ",OLED_8X16);
+				OLED_ShowString(0,32,"流水灯关闭          ",OLED_8X16);
+				OLED_ReverseArea(0,32,128,16); // 反转显示区域，高亮显示
+				OLED_Update(); // 更新OLED显示
+				break;
 			}
 		}
 	}
