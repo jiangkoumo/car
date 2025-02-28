@@ -31,7 +31,7 @@ int main(void)
 	Track_Init();
     
 	// 设置默认速度
-	Track_SetDefaultSpeed(1000); 
+	Track_SetDefaultSpeed(560); 
 
 
 	while (1) // 主循环
@@ -67,6 +67,8 @@ int main(void)
 				OLED_ShowNum(96, 16, Sen[5], 1, OLED_8X16);
 				OLED_Update(); // 更新OLED显示内容
 				
+
+				// delay_s(1); //	延时2秒
 				Track_Run(); // 执行寻迹算法，控制小车运动
 			}
 		}
@@ -76,10 +78,10 @@ int main(void)
 			Menu2_Motor(); // 显示电机测试菜单并执行相应操作
 		}
 
-		if(menu2 == 3) // 如果选择了选项3(流水灯控制)
-		{
-			Menu2_LED(); // 显示流水灯控制菜单并执行相应操作
-		}
+		// if(menu2 == 3) // 如果选择了选项3(流水灯控制)
+		// {
+		// 	Menu2_LED(); // 显示流水灯控制菜单并执行相应操作
+		// }
 	}
 	
 }

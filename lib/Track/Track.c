@@ -11,10 +11,10 @@
 #include "Delay.h"
 
 // 默认速度设置
-#define DEFAULT_SPEED 1000      // 默认前进速度
-#define TURN_SPEED_LOW 300     // 轻微转弯速度
-#define TURN_SPEED_MID 400    // 中等转弯速度
-#define TURN_SPEED_HIGH 500    // 急转弯速度
+#define DEFAULT_SPEED 320      // 默认前进速度
+#define TURN_SPEED_LOW 240     // 轻微转弯速度
+#define TURN_SPEED_MID 320    // 中等转弯速度
+#define TURN_SPEED_HIGH 400    
 
 // 全局变量
 static uint16_t g_defaultSpeed = DEFAULT_SPEED;  // 可调整的默认速度
@@ -87,7 +87,7 @@ void Track_Run(void)
     uint8_t sensorState = Track_GetSensorState();
     
     // 没有检测到线或全部检测到线，保持上一个状态
-    if(sensorState == 0x00 || sensorState == 0x3F)
+    if(sensorState == 0x3F)
     {
         // 可以选择停止或保持上一次的动作
         // 这里选择停止
@@ -99,9 +99,9 @@ void Track_Run(void)
     // 直线前进 - 中间两个传感器检测到线
     if(sensorState == 0x0C) // 0b001100
     {
-        Motor_LeftSetSpeed(g_defaultSpeed);
+        Motor_LeftSetSpeed(g_defaultSpeed );
         Motor_RightSetSpeed(g_defaultSpeed);
-    }
+    }    
     // 轻微左偏 - 传感器2和传感器1检测到线
     else if(sensorState == 0x06) // 0b000110
     {
@@ -129,14 +129,14 @@ void Track_Run(void)
     // 急左偏 - 只有传感器0检测到线
     else if(sensorState == 0x01) // 0b000001
     {
-        Motor_LeftSetSpeed(g_defaultSpeed - TURN_SPEED_MID);
-        Motor_RightSetSpeed(g_defaultSpeed + TURN_SPEED_MID);
+        Motor_LeftSetSpeed(g_defaultSpeed - TURN_SPEED_HIGH);
+        Motor_RightSetSpeed(g_defaultSpeed + TURN_SPEED_HIGH);
     }
     // 急右偏 - 只有传感器5检测到线
     else if(sensorState == 0x20) // 0b100000
     {
-        Motor_LeftSetSpeed(g_defaultSpeed + TURN_SPEED_MID);
-        Motor_RightSetSpeed(g_defaultSpeed - TURN_SPEED_MID);
+        Motor_LeftSetSpeed(g_defaultSpeed + TURN_SPEED_HIGH);
+        Motor_RightSetSpeed(g_defaultSpeed - TURN_SPEED_HIGH);
     }
     // 其他情况 - 根据左右传感器数量决定转向
     else
@@ -178,3 +178,18 @@ void Track_Run(void)
     // 添加一个短暂延时，避免过于频繁的调整
     delay_ms(20);
 }
+
+// 添加加速缓冲函数
+// void Motor_SmoothAccelerate(uint16_t targetSpeed)
+// {
+//     uint16_t currentSpeed = 0;
+//     while(currentSpeed < targetSpeed)
+//     {
+//         currentSpeed += 50;  // 每次增加50的速度
+//         if(currentSpeed > targetSpeed) currentSpeed = targetSpeed;
+        
+//         Motor_LeftSetSpeed(currentSpeed);
+//         Motor_RightSetSpeed(currentSpeed);
+//         delay_ms(20);  // 每次增速后短暂等待
+//     }
+// }

@@ -32,7 +32,7 @@ void PWM_Init(void)
     TIM_TimeBaseStructInit.TIM_ClockDivision = TIM_CKD_DIV1;       // 时钟分频因子，不分频
     TIM_TimeBaseStructInit.TIM_CounterMode = TIM_CounterMode_Up;   // 向上计数模式
     TIM_TimeBaseStructInit.TIM_Period = 1000 - 1;                   // 自动重装载值，决定PWM周期
-    TIM_TimeBaseStructInit.TIM_Prescaler = 36 - 1;                // 预分频值，决定计数频率
+    TIM_TimeBaseStructInit.TIM_Prescaler = 95 - 1;                // 预分频值，决定计数频率
     TIM_TimeBaseStructInit.TIM_RepetitionCounter = 0;              // 重复计数器值，不使用
     TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructInit);
 

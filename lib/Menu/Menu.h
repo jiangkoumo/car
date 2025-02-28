@@ -3,6 +3,5 @@
 
 int Menu1(void);
 int Menu2_Motor(void);
-int Menu2_LED(void);
 
 #endif // __MENU_H
