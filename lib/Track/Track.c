@@ -43,7 +43,7 @@ void Track_Init(void)
   */
 void Track_SetDefaultSpeed(uint16_t speed)
 {
-    if(speed <= 100)
+    if(speed <= 1000)
     {
         g_defaultSpeed = speed;
     }
