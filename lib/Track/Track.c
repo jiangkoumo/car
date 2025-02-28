@@ -95,6 +95,11 @@ void Track_Run(void)
         Motor_RightSetSpeed(g_defaultSpeed);
         return;
     }
+    //全白右转
+    else if(sensorState == 0x00) // 0b100000
+    {
+        Motor_RightSetSpeed(g_defaultSpeed );
+    }
     
     // 直线前进 - 中间两个传感器检测到线
     if(sensorState == 0x0C) // 0b001100
@@ -139,12 +144,6 @@ void Track_Run(void)
         Motor_RightSetSpeed(g_defaultSpeed - TURN_SPEED_HIGH);
     }
 
-    else if(sensorState == 0x00) // 0b100000
-    {
-        Motor_RightSetSpeed(g_defaultSpeed );
-    }
-
-    
     // 其他情况 - 根据左右传感器数量决定转向
     else
     {
