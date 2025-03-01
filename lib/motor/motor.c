@@ -63,8 +63,8 @@ void Motor_go()
 }
 void Motor_back()
 {
-	 Motor_RightSetSpeed(-500);
-	 Motor_LeftSetSpeed(-500);
+	 Motor_RightSetSpeed(-100);
+	 Motor_LeftSetSpeed(-100);
 }
 void Motor_stop()
 {
