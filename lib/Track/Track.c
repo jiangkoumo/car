@@ -103,106 +103,116 @@ uint8_t Track_GetStableSensorState(void)
 }
 
 /**
-  * @brief  执行寻迹控制
-  * @param  无
-  * @retval 无
-  */    
-    // 0b111111 表示所有传感器都检测到线
+ * @brief 执行寻迹控制函数
+ * @param 无
+ * @retval 无
+ * @note 根据传感器状态调整电机速度实现寻迹功能
+ */
+void Track_Run(void)
+{
+    // 获取当前传感器状态
+    uint8_t sensorState = Track_GetSensorState();
     
-    // 理想情况下，中间的传感器(2和3)位于线上
-    // 判断小车位置并调整速度
-    void Track_Run(void)
+    // 处理全黑状态 (0x3F = 0b111111, 所有传感器都检测到黑线)
+    if(sensorState == 0x3F)
     {
-        uint8_t sensorState = Track_GetSensorState();
-        
-        
-        if(sensorState == 0x3F)
+        if(full_black_CNT == 0)
         {
-                if(full_black_CNT == 0)
-        {
-            //第一次全黑，保持直行
+            // 第一次检测到全黑区域，保持直行
             Motor_LeftSetSpeed(DEFAULT_SPEED);
             Motor_RightSetSpeed(DEFAULT_SPEED);
-            full_black_CNT = 1;
+            full_black_CNT = 1;  // 标记已经检测到第一次全黑
         }
         else if(full_black_CNT == 1 && !is_second_black)
         {
-            //第二次全黑，启动演示停止流程
-            is_second_black = 1;
-            stop_timer = 0;
+            // 检测到第二次全黑区域，启动停车流程
+            is_second_black = 1;  // 设置第二次全黑标志
+            stop_timer = 0;       // 重置停车计时器
         }
         else
         {
-            //离开全黑区域时重置第一次检测标志
+            // 处理其他全黑情况
             if(full_black_CNT == 1 && !is_second_black)
             {
-                full_black_CNT = 0;
+                full_black_CNT = 0;  // 重置第一次全黑检测标志
             }
         }
+        
+        // 如果已经检测到第二次全黑区域，执行停车流程
         if(is_second_black)
         {
-            if(++stop_timer > 500) //500ms延时停止
+            if(++stop_timer > 500) // 500ms延时后停车
             {
-                Motor_LeftSetSpeed(0);
-                Motor_RightSetSpeed(0);
-                is_second_black = 0;
-                full_black_CNT = 0;
-                return;				//完全停止后退出
+                Motor_LeftSetSpeed(0);  // 左轮停止
+                Motor_RightSetSpeed(0); // 右轮停止
+                is_second_black = 0;    // 重置第二次全黑标志
+                full_black_CNT = 0;     // 重置第一次全黑标志
+                return;                 // 完全停止后退出
             }
             else
             {
-                return;//继续直行
+                return;  // 延时期间继续直行
             }
         }
     }
-        
-        if(sensorState == 0x0C) // 0b001100
-        {
-            Motor_LeftSetSpeed(g_defaultSpeed);
-            Motor_RightSetSpeed(g_defaultSpeed);
-        }
-        
-        else if(sensorState == 0x06) // 0b000110
-        {
-            Motor_LeftSetSpeed(g_defaultSpeed - TURN_SPEED_LOW);
-            Motor_RightSetSpeed(g_defaultSpeed);
-        }
-        
-        else if(sensorState == 0x18) // 0b011000
-        {
-            Motor_LeftSetSpeed(g_defaultSpeed);
-            Motor_RightSetSpeed(g_defaultSpeed - TURN_SPEED_LOW);
-        }
-        
-        else if(sensorState == 0x02) // 0b000010
-        {
-            Motor_LeftSetSpeed(g_defaultSpeed - TURN_SPEED_MID);
-            Motor_RightSetSpeed(g_defaultSpeed);
-        }
-        
-        else if(sensorState == 0x10) // 0b010000
-        {
-            Motor_LeftSetSpeed(g_defaultSpeed);
-            Motor_RightSetSpeed(g_defaultSpeed - TURN_SPEED_MID);
-        }
-        
-        else if(sensorState == 0x01) // 0b000001
-        {
-            Motor_LeftSetSpeed(g_defaultSpeed - TURN_SPEED_HIGH);      
-            Motor_RightSetSpeed(g_defaultSpeed + TURN_SPEED_HIGH);
-        }
-        
-        else if(sensorState == 0x20) // 0b100000
-        {
-            Motor_LeftSetSpeed(g_defaultSpeed + TURN_SPEED_HIGH);
-            Motor_RightSetSpeed(g_defaultSpeed - TURN_SPEED_HIGH);
-        }
-         else if(sensorState == 0x00) // 0b000000
-        {
-           Motor_RightSetSpeed(g_defaultSpeed - TURN_SPEED_LOW);
-            // Motor_back();
-    //		Motor_stop();
-        }           
+    
+    // 处理中间两个传感器检测到线的情况(直线前进)
+    if(sensorState == 0x0C) // 0b001100
+    {
+        Motor_LeftSetSpeed(g_defaultSpeed);   // 左轮正常速度
+        Motor_RightSetSpeed(g_defaultSpeed);  // 右轮正常速度
+    }
+    
+    // 处理轻微左偏情况 - 传感器1和2检测到线
+    else if(sensorState == 0x06) // 0b000110
+    {
+        Motor_LeftSetSpeed(g_defaultSpeed - TURN_SPEED_LOW); // 左轮减速
+        Motor_RightSetSpeed(g_defaultSpeed);                 // 右轮正常速度
+    }
+    
+    // 处理轻微右偏情况 - 传感器3和4检测到线
+    else if(sensorState == 0x18) // 0b011000
+    {
+        Motor_LeftSetSpeed(g_defaultSpeed);                  // 左轮正常速度
+        Motor_RightSetSpeed(g_defaultSpeed - TURN_SPEED_LOW); // 右轮减速
+    }
+    
+    // 处理中度左偏情况 - 只有传感器1检测到线
+    else if(sensorState == 0x02) // 0b000010
+    {
+        Motor_LeftSetSpeed(g_defaultSpeed - TURN_SPEED_MID); // 左轮中度减速
+        Motor_RightSetSpeed(g_defaultSpeed);                 // 右轮正常速度
+    }
+    
+    // 处理中度右偏情况 - 只有传感器4检测到线
+    else if(sensorState == 0x10) // 0b010000
+    {
+        Motor_LeftSetSpeed(g_defaultSpeed);                  // 左轮正常速度
+        Motor_RightSetSpeed(g_defaultSpeed - TURN_SPEED_MID); // 右轮中度减速
+    }
+    
+    // 处理急左转情况 - 只有最左侧传感器0检测到线
+    else if(sensorState == 0x01) // 0b000001
+    {
+        Motor_LeftSetSpeed(g_defaultSpeed - TURN_SPEED_HIGH);  // 左轮大幅减速
+        Motor_RightSetSpeed(g_defaultSpeed + TURN_SPEED_HIGH); // 右轮大幅加速
+    }
+    
+    // 处理急右转情况 - 只有最右侧传感器5检测到线
+    else if(sensorState == 0x20) // 0b100000
+    {
+        Motor_LeftSetSpeed(g_defaultSpeed + TURN_SPEED_HIGH);  // 左轮大幅加速
+        Motor_RightSetSpeed(g_defaultSpeed - TURN_SPEED_HIGH); // 右轮大幅减速
+    }
+    
+    // 处理全白情况 - 所有传感器都未检测到线
+    else if(sensorState == 0x00) // 0b000000
+    {
+        Motor_RightSetSpeed(g_defaultSpeed - TURN_SPEED_LOW);  // 右轮轻微减速
+        // Motor_back();  // 后退
+        // Motor_stop();  // 停止
+    }
+    
     // 其他情况 - 根据左右传感器数量决定转向
     else
     {
