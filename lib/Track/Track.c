@@ -21,9 +21,9 @@
 
 // 全局变量
 static uint16_t g_defaultSpeed = DEFAULT_SPEED;  // 可调整的默认速度
-static uint8_t full_black_CNT = 0;			//全黑区域计数器
-static uint8_t is_second_black = 0;			//第二次全黑标志位
-static uint32_t stop_timer = 0;				//停止计数器
+// static uint8_t full_black_CNT = 0;			//全黑区域计数器
+// static uint8_t is_second_black = 0;			//第二次全黑标志位
+// static uint32_t stop_timer = 0;				//停止计数器
 
 static uint8_t lastSensorState = 0;
 static uint8_t stableStateCounter = 0;
@@ -116,44 +116,24 @@ void Track_Run(void)
     // 处理全黑状态 (0x3F = 0b111111, 所有传感器都检测到黑线)
     if(sensorState == 0x3F)
     {
-        if(full_black_CNT == 0)
+        int n = 0;
+        n++;
+        Motor_LeftSetSpeed(g_defaultSpeed);   // 左轮正常速度
+        Motor_RightSetSpeed(g_defaultSpeed);  // 右轮正常速度
+        delay_ms(450);
+        if(n == 2)
         {
-            // 第一次检测到全黑区域，保持直行
-            Motor_LeftSetSpeed(DEFAULT_SPEED);
-            Motor_RightSetSpeed(DEFAULT_SPEED);
-            full_black_CNT = 1;  // 标记已经检测到第一次全黑
-        }
-        else if(full_black_CNT == 1 && !is_second_black)
-        {
-            // 检测到第二次全黑区域，启动停车流程
-            is_second_black = 1;  // 设置第二次全黑标志
-            stop_timer = 0;       // 重置停车计时器
-        }
-        else
-        {
-            // 处理其他全黑情况
-            if(full_black_CNT == 1 && !is_second_black)
+            while(1)
             {
-                full_black_CNT = 0;  // 重置第一次全黑检测标志
+                for(int j = 20; j > 0; j--)
+                {
+                    Motor_LeftSetSpeed(j);
+                    Motor_RightSetSpeed(j);
+                    delay_s(2);
+                }
             }
         }
-        
-        // 如果已经检测到第二次全黑区域，执行停车流程
-        if(is_second_black)
-        {
-            if(++stop_timer > 500) // 500ms延时后停车
-            {
-                Motor_LeftSetSpeed(0);  // 左轮停止
-                Motor_RightSetSpeed(0); // 右轮停止
-                is_second_black = 0;    // 重置第二次全黑标志
-                full_black_CNT = 0;     // 重置第一次全黑标志
-                return;                 // 完全停止后退出
-            }
-            else
-            {
-                return;  // 延时期间继续直行
-            }
-        }
+
     }
     
     // 处理中间两个传感器检测到线的情况(直线前进)
